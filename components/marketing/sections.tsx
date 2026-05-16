@@ -1,0 +1,25 @@
+import * as AccordionPrimitive from "@radix-ui/react-accordion";
+import { BarChart3, Bot, Cloud, Lock, Rocket, Sparkles, Users, Video } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { plans } from "@/lib/stripe";
+
+const features = [
+  [Bot, "Seedance2.0 workflows", "Text-to-video, image-to-video, prompt enhancement, status polling, webhook sync, and R2 persistence."],
+  [Rocket, "BullMQ render pipeline", "Redis-backed async generation with retries, timeout handling, progress states, and worker isolation."],
+  [BarChart3, "SaaS analytics", "Credits, usage statistics, API calls, subscriptions, finance snapshots, and admin moderation."],
+  [Cloud, "Cloud native storage", "Cloudflare R2 object storage for durable, CDN-ready generated videos."],
+  [Lock, "Secure by default", "Supabase Auth, protected routes, API rate limits, Stripe webhooks, and security headers."],
+  [Sparkles, "Premium UX", "Aurora backgrounds, neon glass cards, skeletons, toast notifications, and mobile-first flows."],
+];
+
+export function FeatureSection() { return <section id="features" className="mx-auto max-w-7xl px-4 py-24 sm:px-6"><div className="mb-12 text-center"><Badge>Feature matrix</Badge><h2 className="mt-4 text-4xl font-bold sm:text-6xl">A full-stack AI video OS.</h2></div><div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">{features.map(([Icon, title, text]) => <Card key={title as string} className="group p-2 transition hover:-translate-y-2 hover:shadow-neon"><CardContent className="p-6"><div className="mb-8 grid h-12 w-12 place-items-center rounded-2xl bg-white/10 text-cyan-300"><Icon className="h-6 w-6" /></div><h3 className="text-xl font-semibold">{title as string}</h3><p className="mt-3 text-sm leading-6 text-white/60">{text as string}</p></CardContent></Card>)}</div></section>; }
+
+export function PricingSection() { return <section id="pricing" className="mx-auto max-w-7xl px-4 py-24 sm:px-6"><div className="mb-12 text-center"><Badge>Pricing</Badge><h2 className="mt-4 text-4xl font-bold sm:text-6xl">Scale from idea to studio.</h2></div><div className="grid gap-5 lg:grid-cols-3">{plans.map((plan, i) => <Card key={plan.name} className={`relative p-2 transition hover:-translate-y-2 ${i === 1 ? "neon-border shadow-neon" : ""}`}><CardContent className="p-7"><div className="flex items-center justify-between"><h3 className="text-2xl font-bold">{plan.name}</h3>{i === 1 && <Badge className="bg-indigo-500/30">Popular</Badge>}</div><div className="mt-8 flex items-end gap-2"><span className="text-5xl font-black">{plan.price}</span><span className="pb-2 text-white/50">/mo</span></div><p className="mt-3 text-cyan-200">{plan.credits}</p><ul className="mt-8 space-y-3 text-sm text-white/68">{plan.features.map((f) => <li key={f} className="flex gap-2"><Sparkles className="h-4 w-4 text-cyan-300" />{f}</li>)}</ul><Button className="mt-8 w-full" variant={i === 0 ? "secondary" : "default"}>Choose {plan.name}</Button></CardContent></Card>)}</div></section>; }
+
+export function Testimonials() { return <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6"><div className="grid gap-4 md:grid-cols-3">{["Nova made our launch trailer in one afternoon.", "The interface feels like the future of creative tools.", "Credits, queues, and payments were ready for production."].map((q, i) => <Card key={q} className="p-6"><p className="text-lg">“{q}”</p><div className="mt-8 flex items-center gap-3"><div className="grid h-10 w-10 place-items-center rounded-full bg-gradient-to-br from-cyan-400 to-fuchsia-500"><Users className="h-5 w-5" /></div><div><div className="font-semibold">Studio Lead {i + 1}</div><div className="text-xs text-white/50">AI Creative Director</div></div></div></Card>)}</div></section>; }
+
+export function FAQSection() { return <section id="faq" className="mx-auto max-w-4xl px-4 py-24 sm:px-6"><h2 className="mb-8 text-center text-4xl font-bold">FAQ</h2><AccordionPrimitive.Root type="single" collapsible className="space-y-3">{[["Is it production ready?", "The template includes auth, billing, queueing, persistence, storage, admin, and deployment docs."], ["How does Seedance work?", "Generation is submitted asynchronously, then workers poll task status and store the final video in Cloudflare R2."], ["Can I customize plans?", "Yes. Update Stripe price IDs, credit grants, and plan limits from the environment and webhook handler."]].map(([q,a]) => <AccordionPrimitive.Item key={q} value={q} className="glass rounded-2xl px-5"><AccordionPrimitive.Trigger className="flex w-full justify-between py-5 text-left font-semibold">{q}</AccordionPrimitive.Trigger><AccordionPrimitive.Content className="pb-5 text-white/60">{a}</AccordionPrimitive.Content></AccordionPrimitive.Item>)}</AccordionPrimitive.Root></section>; }
+
+export function Footer() { return <footer className="border-t border-white/10 py-10 text-center text-sm text-white/50"><Video className="mx-auto mb-3 h-5 w-5" />© 2026 Nova AI Video. Built for AI-native studios.</footer>; }

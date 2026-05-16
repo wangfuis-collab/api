@@ -1,0 +1,73 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql" url = env("DATABASE_URL") }
+
+enum Plan { FREE PRO UNLIMITED }
+enum VideoStatus { QUEUED PROCESSING SUCCEEDED FAILED CANCELED }
+enum VideoMode { TEXT_TO_VIDEO IMAGE_TO_VIDEO }
+
+model User {
+  id String @id @default(cuid())
+  supabaseId String @unique
+  email String @unique
+  name String?
+  avatarUrl String?
+  role String @default("USER")
+  plan Plan @default(FREE)
+  credits Int @default(100)
+  stripeCustomerId String?
+  stripeSubscriptionId String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  videos VideoGeneration[]
+  creditTransactions CreditTransaction[]
+  apiCalls ApiCall[]
+}
+
+model VideoGeneration {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mode VideoMode @default(TEXT_TO_VIDEO)
+  prompt String
+  enhancedPrompt String?
+  sourceImageUrl String?
+  videoUrl String?
+  thumbnailUrl String?
+  seedanceTaskId String? @unique
+  status VideoStatus @default(QUEUED)
+  progress Int @default(0)
+  aspectRatio String @default("16:9")
+  duration Int @default(5)
+  style String @default("cinematic")
+  creditsCost Int @default(10)
+  errorMessage String?
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, createdAt])
+  @@index([status])
+}
+
+model CreditTransaction {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amount Int
+  reason String
+  referenceId String?
+  createdAt DateTime @default(now())
+}
+
+model ApiCall {
+  id String @id @default(cuid())
+  userId String?
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  endpoint String
+  statusCode Int
+  latencyMs Int
+  ip String?
+  createdAt DateTime @default(now())
+
+  @@index([endpoint, createdAt])
+}
